@@ -37,6 +37,7 @@ public class GlobalExceptionHandler {
         // Duplicate entry '朋梓晨' for key 'employee.idx_username'
         String message = ex.getMessage();
         if (message.contains("Duplicate entry")) {
+            log.error("异常信息：{}", message);
             String[] split = message.split(" ");
             String username = split[2];
             String msg = username + MessageConstant.ALREADY_EXIST;
