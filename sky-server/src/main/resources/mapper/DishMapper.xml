@@ -45,7 +45,7 @@
         order by d.update_time desc
     </select>
 
-    <select id="list" resultType="Dish" parameterType="Dish">
+    <select id="list" resultType="com.sky.entity.Dish" parameterType="com.sky.entity.Dish">
         select * from dish
         <where>
             <if test="name != null">and name like concat('%',#{name},'%')</if>
