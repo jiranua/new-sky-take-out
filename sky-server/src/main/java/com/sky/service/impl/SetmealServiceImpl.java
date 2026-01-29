@@ -42,14 +42,15 @@ public class SetmealServiceImpl implements SetmealService {
      * 新增套餐，同时需要保存套餐和菜品的关联关系
      * @param setmealDTO
      */
+    @Transactional
     public void saveWithDish(SetmealDTO setmealDTO) {
         Setmeal setmeal = new Setmeal();
         BeanUtils.copyProperties(setmealDTO, setmeal);
 
-        // 向套餐表插入数据
+        //向套餐表插入数据
         setmealMapper.insert(setmeal);
 
-        // 获取生成的套餐id
+        //获取生成的套餐id
         Long setmealId = setmeal.getId();
 
         List<SetmealDish> setmealDishes = setmealDTO.getSetmealDishes();
@@ -57,7 +58,7 @@ public class SetmealServiceImpl implements SetmealService {
             setmealDish.setSetmealId(setmealId);
         });
 
-        // 向套餐菜品关系表插入数据
+        //保存套餐和菜品的关联关系
         setmealDishMapper.insertBatch(setmealDishes);
     }
 

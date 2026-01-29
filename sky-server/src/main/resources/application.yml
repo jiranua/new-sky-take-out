@@ -17,6 +17,11 @@ spring:
     port: ${sky.redis.port}
     # password: ${sky.redis.password}
     database: ${sky.redis.database}
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 2MB     # 单个文件最大 10MB
+      max-request-size: 5MB  # 整个请求最大 10MB（多文件总和）
 
 mybatis:
   #mapper配置文件
