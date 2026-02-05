@@ -18,11 +18,10 @@ public class OrderTask {
     private OrderMapper orderMapper;
 
 
-
     /**
      * 处理支付超时订单
      */
-    @Scheduled(cron = "0 * * * * ?") // 每分钟执行一次
+    @Scheduled(cron = "0 0/5 * * * ?") // 每分钟执行一次
     public void processTimeoutOrders(){
         log.info("处理支付超时订单，{}", LocalDateTime.now());
 
