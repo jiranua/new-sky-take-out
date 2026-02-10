@@ -2,8 +2,10 @@ package com.sky.service.impl;
 
 import com.sky.entity.Orders;
 import com.sky.mapper.OrderMapper;
+import com.sky.mapper.UserMapper;
 import com.sky.service.ReportService;
 import com.sky.vo.TurnoverReportVO;
+import com.sky.vo.UserReportVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +26,8 @@ public class ReportServiceImpl implements ReportService {
     @Autowired
     private OrderMapper orderMapper;
 
-
+    @Autowired
+    private UserMapper userMapper;
 
 
     /**
@@ -68,6 +71,48 @@ public class ReportServiceImpl implements ReportService {
     }
 
 
+    /**
+     * 用户统计
+     * @param begin
+     * @param end
+     * @return
+     */
+    public UserReportVO getUserStatistics(LocalDate begin, LocalDate end) {
+        // 存放begin到end每天的日期
+        List<LocalDate> dateList = new ArrayList<>();
+        dateList.add(begin);
 
+        while (!begin.equals(end)){
+            begin = begin.plusDays(1);
+            dateList.add(begin);
+        }
 
+        // 存放每天新增的用户数  select count(id) from user where create_time > beginTime and create_time < endTime
+        List<Integer> newUserList = new ArrayList<>();
+        // 存放每天总用户数  select count(id) from user where create_time < endTime
+        List<Integer> totalUserList = new ArrayList<>();
+
+        for (LocalDate date : dateList) {
+            LocalDateTime beginTime = LocalDateTime.of(date, LocalTime.MIN);
+            LocalDateTime endTime = LocalDateTime.of(date, LocalTime.MAX);
+            Map map = new HashMap<>();
+            map.put("end", endTime);
+            // 总用户数
+            Integer totalUser = userMapper.countByMap(map);
+
+            map.put("begin", beginTime);
+            // 新增用户数
+            Integer newUser = userMapper.countByMap(map);
+
+            totalUserList.add(totalUser);
+            newUserList.add(newUser);
+        }
+        // 组装返回结果
+        return UserReportVO
+                .builder()
+                .dateList(StringUtils.join(dateList,","))
+                .totalUserList(StringUtils.join(totalUserList,","))
+                .newUserList(StringUtils.join(newUserList,","))
+                .build();
+    }
 }
